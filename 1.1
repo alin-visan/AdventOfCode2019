@@ -1,0 +1,19 @@
+std::ifstream fin;
+fin.open("E:\\Visual Studio Projects\\AoC.txt");
+
+if (!fin.is_open())
+  return -1;
+
+int sum = 0;
+while (fin.good())
+{
+  int local = 0;
+  fin >> local;
+    
+  local /= 3;
+  local -= 2;
+
+
+  sum += local;
+}
+fin.close();
