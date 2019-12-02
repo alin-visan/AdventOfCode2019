@@ -1,0 +1,47 @@
+ifstream fin("D:\\AoC.txt", ifstream::in);
+
+if (!fin.is_open())
+  return -1;
+
+vector<int> values;
+  
+string str;
+while (fin.good())
+{
+   char c = fin.get();
+   if (fin.eof())
+     values.push_back(std::stoi(str));
+
+  if (c != ',')
+    str.append(1, c);
+  else
+  {
+    values.push_back(std::stoi(str));
+    str.clear();
+  }
+}
+fin.close();
+
+values[1] = 12;
+values[2] = 2;
+
+for (int i = 0; i < values.size(); i += 4)
+{
+  if(values[i] == 99 || i > values.size())
+    break;
+
+  int op = values[i];
+  
+  int first = values[i + 1];
+  if (first == values.size())
+    first--;
+    
+  int second = values[i + 2];
+  if (second == values.size())
+  second--;
+
+  if (op == 1)
+    values[values[i + 3]] = values[first] + values[second];
+  else if(op == 2)
+    values[values[i + 3]] = values[first] * values[second];
+}
