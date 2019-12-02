@@ -1,0 +1,64 @@
+ ifstream fin("D:\\AoC.txt", ifstream::in);
+
+  if (!fin.is_open())
+    return -1;
+
+  vector<int> values;
+  
+  string str;
+  while (fin.good())
+  {
+     char c = fin.get();
+     if (fin.eof())
+       values.push_back(std::stoi(str));
+
+    if (c != ',')
+      str.append(1, c);
+    else
+    {
+      values.push_back(std::stoi(str));
+      str.clear();
+    }
+  }
+  fin.close();
+
+  
+
+  for (int i = 0; i < 100; i++)
+  {
+    for (int j = 0; j < 100; j++)
+    {
+      vector<int> copyValues = values;
+
+      copyValues[1] = i;
+      copyValues[2] = j;
+
+      for (int i = 0; i < copyValues.size(); i += 4)
+      {
+        if (copyValues[i] == 99 || i > copyValues.size())
+          break;
+
+        int op = copyValues[i];
+
+        int first = copyValues[i + 1];
+        if (first == copyValues.size())
+          first--;
+
+        int second = copyValues[i + 2];
+        if (second == copyValues.size())
+          second--;
+
+
+        if (op == 1)
+          copyValues[copyValues[i + 3]] = copyValues[first] + copyValues[second];
+        else if (op == 2)
+          copyValues[copyValues[i + 3]] = copyValues[first] * copyValues[second];
+      }
+
+      if (copyValues[0] == 19690720)
+      {
+        int k = 100 * i + j;
+        k;
+      }
+    }
+  }
