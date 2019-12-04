@@ -1,0 +1,135 @@
+
+struct Point
+{
+  int x = 0;
+  int y = 0;
+};
+
+struct Segment
+{
+  vector<Point> points;
+};
+
+void AddSegments(vector<Segment>& Segments, string aStr)
+{
+  int oX = 0, oY = 0;
+  while (!aStr.empty())
+  {
+    int pos = aStr.find_first_of(',');
+    string movement = aStr.substr(0, pos);
+    if (pos == string::npos)
+    {
+      movement = aStr;
+      aStr.clear();
+    }
+    else
+      aStr = aStr.substr(aStr.find_first_of(',') + 1);
+
+    Segment seg;
+
+    int steps = std::stoi(movement.substr(1));
+    if (movement[0] == 'R')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX++, oY };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'L')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX--, oY };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'D')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX, oY-- };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'U')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX, oY++ };
+        seg.points.push_back(p);
+      }
+    }
+    Segments.push_back(seg);
+  }
+}
+
+
+bool Intersect(const Point& p1, const Point& p2)
+{
+  return p1.x == p2.x && p1.y == p2.y;
+}
+
+int main()
+{
+  ifstream fin("D:\\AoC.txt", ifstream::in);
+
+  if (!fin.is_open())
+    return -1;
+
+  vector<Segment> wire1;
+  vector<Segment> wire2;
+
+  while (fin.good())
+  {
+    string str;
+    fin >> str;
+    AddSegments(wire1, str);
+
+    str.clear();
+    fin >> str;
+    AddSegments(wire2, str);
+  }
+  fin.close();
+
+  vector<int> nSteps;
+
+  for (int i = 0; i < wire1.size(); i++)
+  {
+    for (int j = 0; j < wire2.size(); j++)
+    {
+      for (const auto& point1 : wire1[i].points)
+        for (const auto& point2 : wire2[j].points)
+        {
+          if (Intersect(point1, point2))
+          {
+            int steps = 0;
+            for (int k = 0; k < i; k++)
+              steps += wire1[k].points.size();
+              
+            for (int m = 0; m < j; m++)
+              steps += wire2[m].points.size();
+
+
+            for (int k = 0; k < wire1[i].points.size(); k++)
+            {
+              if (wire1[i].points[k].x == point1.x && wire1[i].points[k].y == point1.y)
+                break;
+              steps++;
+            }
+
+            for (int k = 0; k < wire2[j].points.size(); k++)
+            {
+              if (wire2[j].points[k].x == point2.x && wire2[j].points[k].y == point2.y)
+                break;
+              steps++;
+            }
+
+            nSteps.push_back(steps);
+          }
+        }
+    }
+  }
+
+  return 0;
+}
