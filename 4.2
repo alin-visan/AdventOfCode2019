@@ -1,0 +1,38 @@
+  int nMin = 347312;
+  int nMax = 805915;
+
+  int answer = 0;
+  for (int i = nMin + 1; i < nMax; i++)
+  {
+    int vec[10] = {};
+    int a[6] = {};
+
+    int aux = i;
+    int index = 5;
+    while (aux)
+    {
+      int cif = aux % 10;
+      aux /= 10;
+      a[index--] = cif;
+      vec[cif]++;
+    }
+
+    bool hasDouble = false;
+    bool neverDecrease = true;
+
+    for (int i = 1; i < 6; i++)
+    {
+      if (a[i - 1] == a[i])
+        hasDouble = true;
+      else if (a[i - 1] > a[i])
+        neverDecrease = false;
+    }
+
+    bool hasTwo = false;
+    for (int i = 0; i < 6; i++)
+      if (vec[a[i]] == 2)
+        hasTwo = true;
+
+    if (hasDouble && neverDecrease && hasTwo)
+      answer++;
+  }
