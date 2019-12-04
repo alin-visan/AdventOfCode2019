@@ -1,0 +1,129 @@
+struct Point
+{
+  int x = 0;
+  int y = 0;
+};
+
+struct Segment
+{
+  vector<Point> points;
+};
+
+void AddSegments(vector<Segment>& Segments, string aStr)
+{
+  int oX = 0, oY = 0;
+  while (!aStr.empty())
+  {
+    int pos = aStr.find_first_of(',');
+    string movement = aStr.substr(0, pos);
+    if (pos == string::npos)
+    {
+      movement = aStr;
+      aStr.clear();
+    }
+    else
+      aStr = aStr.substr(aStr.find_first_of(',') + 1);
+
+    Segment seg;
+
+    int steps = std::stoi(movement.substr(1));
+    if (movement[0] == 'R')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX++, oY };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'L')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX--, oY };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'D')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX, oY-- };
+        seg.points.push_back(p);
+      }
+    }
+    else if (movement[0] == 'U')
+    {
+      for (int i = 0; i < steps; i++)
+      {
+        Point p{ oX, oY++ };
+        seg.points.push_back(p);
+      }
+    }
+    Segments.push_back(seg);
+  }
+}
+
+
+bool Intersect(const Point& p1, const Point& p2)
+{
+  return p1.x == p2.x && p1.y == p2.y;
+}
+
+int main()
+{
+  ifstream fin("D:\\AoC.txt", ifstream::in);
+
+  if (!fin.is_open())
+    return -1;
+
+  vector<Segment> segments1;
+  vector<Segment> segments2;
+
+  while (fin.good())
+  {
+    string str;
+    fin >> str;
+    AddSegments(segments1, str);
+
+    str.clear();
+    fin >> str;
+    AddSegments(segments2, str);
+  }
+  fin.close();
+ 
+
+  vector<Point> distances;
+  for (const auto seg1 : segments1)
+  {
+    for (const auto seg2 : segments2)
+    {
+      for(const auto & point1 : seg1.points)
+        for (const auto& point2 : seg2.points)
+        {
+          if (Intersect(point1, point2))
+            distances.push_back(point1);
+        }
+    }
+  }
+
+  vector<int> dds;
+  for (const auto& dist : distances)
+  {
+    int distX = dist.x ;
+    if (distX < 0)
+      distX *= -1;
+
+    int distY = dist.y;
+    if (distY < 0)
+      distY *= -1;
+
+    dds.push_back(distX + distY);
+  }
+
+  int min = INT_MAX;
+  for (int i = 1; i < dds.size(); i++)
+    if (dds[i] < min)
+      min = dds[i];
+
+  return 0;
+}
