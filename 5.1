@@ -1,0 +1,92 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <conio.h>
+#include <array>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
+#include <algorithm>
+
+using namespace std;
+
+int GetVal(const vector<int> & values, int val, int mode)
+{
+  return mode == 0 ? values[val] : val;
+}
+
+int main()
+{
+  std::ifstream fin;
+  fin.open("E:\\Visual Studio Projects\\AoC.txt");
+
+  if (!fin.is_open())
+    return -1;
+
+  vector<int> values;
+  string str;
+
+  while (fin.good())
+  {
+    char c = fin.get();
+    if (fin.eof())
+      values.push_back(std::stoi(str));
+
+    if (c != ',')
+      str.append(1, c);
+    else
+    {
+      values.push_back(std::stoi(str));
+      str.clear();
+    }
+  }
+  fin.close();
+
+
+  int i = 0;
+  while(i < values.size())
+  {
+    if (values[i] == 99 || i > values.size())
+      break;
+
+    int op, mode1, mode2;
+
+    int inst = values[i];
+    if (inst == 99)
+      op = inst;
+    else
+      op = inst % 10;
+
+    inst /= 100;
+    mode1 = inst % 10;
+
+    inst /= 10;
+    mode2 = inst % 10;
+
+    int first = values[i + 1];
+
+    int second = values[i + 2];
+
+    if (op == 3)
+    {
+      values[first] = 1;
+      i += 2;
+      continue;
+    }
+
+    if (op == 4)
+    {
+      cout << values[values[i + 1]] << ' ';
+      i += 2;
+      continue;
+    }
+
+    if (op == 1)
+      values[values[i + 3]] = GetVal(values, first, mode1) + GetVal(values, second, mode2);
+    else if (op == 2)
+      values[values[i + 3]] = GetVal(values, first, mode1) * GetVal(values, second, mode2);
+    i += 4;
+  }
+
+  return 0;
+}
